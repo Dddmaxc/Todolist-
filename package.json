@@ -7,23 +7,35 @@
     "dev": "vite --port 3000",
     "build": "tsc -b && vite build",
     "test": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,scss,md}\""
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
     "@mui/icons-material": "6.3.0",
     "@mui/material": "6.3.0",
-    "@reduxjs/toolkit": "2.5.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-redux": "9.2.0"
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
+    "@types/node": "^24.2.0",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
     "@vitejs/plugin-react-swc": "3.7.2",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "gh-pages": "^6.3.0",
     "globals": "15.14.0",
+    "prettier": "^3.6.2",
     "typescript": "5.7.2",
     "vite": "6.0.6",
     "vitest": "2.1.8"
