@@ -7,11 +7,11 @@ import { createTodolistAC } from '@/features/todolist/model/todolists-reducer';
 
 export const Main = () => {
   const dispatch = useAppDispatch();
- 
+
   const createTodolist = (title: string) => {
     dispatch(createTodolistAC(title));
   };
-  
+
   return (
     <>
       <Container maxWidth={'lg'}>
@@ -19,7 +19,7 @@ export const Main = () => {
           <CreateItemForm onCreateItem={createTodolist} />
         </Grid>
         <Grid container spacing={4}>
-         <Todolists/>
+          <Todolists />
         </Grid>
       </Container>
     </>

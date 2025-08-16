@@ -1,5 +1,12 @@
 import { beforeEach, expect, test } from 'vitest';
-import { changeTaskStatusAC, changeTaskTitleAC, createTaskAC, deleteTaskAC, tasksReducer, TasksState } from '../tasks-reducer';
+import {
+  changeTaskStatusAC,
+  changeTaskTitleAC,
+  createTaskAC,
+  deleteTaskAC,
+  tasksReducer,
+  TasksState,
+} from '../tasks-reducer';
 import { createTodolistAC, deleteTodolistAC } from '../todolists-reducer';
 
 let startState: TasksState = {};
@@ -57,7 +64,11 @@ test('correct task should be created at correct array', () => {
 test('correct task should change its status', () => {
   const endState = tasksReducer(
     startState,
-    changeTaskStatusAC({ todolistId: 'todolistId2', taskId: '2', isDone: false }),
+    changeTaskStatusAC({
+      todolistId: 'todolistId2',
+      taskId: '2',
+      isDone: false,
+    }),
   );
 
   expect(endState.todolistId2[1].isDone).toBe(false);
@@ -67,7 +78,11 @@ test('correct task should change its status', () => {
 test('correct task should change its title', () => {
   const endState = tasksReducer(
     startState,
-    changeTaskTitleAC({ todolistId: 'todolistId2', taskId: '2', title: 'coffee' }),
+    changeTaskTitleAC({
+      todolistId: 'todolistId2',
+      taskId: '2',
+      title: 'coffee',
+    }),
   );
 
   expect(endState.todolistId2[1].title).toBe('coffee');
@@ -78,7 +93,7 @@ test('array should be created for new todolist', () => {
   const endState = tasksReducer(startState, createTodolistAC('New todolist'));
 
   const keys = Object.keys(endState);
-  const newKey = keys.find(k => k !== 'todolistId1' && k !== 'todolistId2');
+  const newKey = keys.find((k) => k !== 'todolistId1' && k !== 'todolistId2');
   if (!newKey) {
     throw Error('New key should be added');
   }
@@ -88,7 +103,10 @@ test('array should be created for new todolist', () => {
 });
 
 test('property with todolistId should be deleted', () => {
-  const endState = tasksReducer(startState, deleteTodolistAC({ id: 'todolistId2' }));
+  const endState = tasksReducer(
+    startState,
+    deleteTodolistAC({ id: 'todolistId2' }),
+  );
 
   const keys = Object.keys(endState);
 

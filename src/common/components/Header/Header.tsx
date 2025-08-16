@@ -8,7 +8,6 @@ import { changeThemeMode } from '@/app/app-reducer';
 import { containerSx } from '@/common/styles/container.styles';
 import { NavButton } from '../NavButton/NavButton';
 
-
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode);
 
