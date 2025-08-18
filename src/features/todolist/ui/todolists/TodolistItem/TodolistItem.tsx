@@ -1,21 +1,21 @@
-import { CreateItemForm } from '../../../../../common/components/createItemForm/CreateItemForm';
-import { useAppDispatch } from '../../../../../common/hooks/useAppDispatch';
-import { TodolistTitle } from './TodolistTitle/TodolistTitle';
-import { Tasks } from './tasks/Tasks';
-import { FilterButtons } from './FilterButtons/FilterButtons';
-import { Todolist } from '../../../model/todolists-reducer';
-import { createTaskAC } from '../../../model/tasks-reducer';
+import { CreateItemForm } from "../../../../../common/components/createItemForm/CreateItemForm"
+import { useAppDispatch } from "../../../../../common/hooks/useAppDispatch"
+import { TodolistTitle } from "./TodolistTitle/TodolistTitle"
+import { Tasks } from "./tasks/Tasks"
+import { FilterButtons } from "./FilterButtons/FilterButtons"
+import { Todolist } from "../../../model/todolists-slice"
+import { createTaskAC } from "../../../model/tasks-slice"
 
 type Props = {
-  todolist: Todolist;
-};
+  todolist: Todolist
+}
 
 export const TodolistItem = ({ todolist }: Props) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   const createTask = (title: string) => {
-    dispatch(createTaskAC({ todolistId: todolist.id, title }));
-  };
+    dispatch(createTaskAC(todolist.id, title))
+  }
 
   return (
     <div>
@@ -24,5 +24,5 @@ export const TodolistItem = ({ todolist }: Props) => {
       <Tasks todolist={todolist} />
       <FilterButtons todolist={todolist} />
     </div>
-  );
-};
+  )
+}
