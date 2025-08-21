@@ -1,10 +1,9 @@
 import { AppBar, Container, IconButton, Switch, Toolbar } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import { useAppSelector } from "@/common/hooks/useAppSelector"
-import { selectThemeMode } from "@/app/app-selector"
 import { useAppDispatch } from "@/common/hooks/useAppDispatch"
 import { getTheme } from "@/common/theme/theme"
-import { changeThemeMode } from "@/app/app-slice"
+import { changeThemeMode, selectThemeMode } from "@/app/app-slice"
 import { containerSx } from "@/common/styles/container.styles"
 import { NavButton } from "../NavButton/NavButton"
 

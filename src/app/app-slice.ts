@@ -10,9 +10,13 @@ export const appSlice = createSlice({
       state.themeMode = action.payload.themeMode
     }),
   }),
+  selectors: {
+    selectThemeMode:(state) => state.themeMode
+  }
 })
 
 export const { changeThemeMode } = appSlice.actions
+export const { selectThemeMode } = appSlice.selectors
 export default appSlice.reducer
 
 export type ThemeMode = "dark" | "light"
