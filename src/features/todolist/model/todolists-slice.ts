@@ -1,12 +1,13 @@
 import { Todolist } from "../api/todolistsApi.types"
 import { todolistsApi } from "../api/todolistsApi"
 import { createAppSlice } from "@/common/utils/createAppSlice"
-import { setAppStatus } from "@/app/app-slice"
+import { RequestStatus, setAppStatus } from "@/app/app-slice"
 
 export type FilterValues = "all" | "active" | "completed"
 
 export type DomainTodolist = Todolist & {
   filter: FilterValues
+  entityStatus:  RequestStatus,
 }
 
 const todolistsSlice = createAppSlice({
@@ -52,7 +53,9 @@ const todolistsSlice = createAppSlice({
       {
         fulfilled: (state, action) => {
           if (action.payload?.todolist) {
-            state.unshift({ ...action.payload.todolist, filter: "all" })
+            state.unshift({ ...action.payload.todolist, filter: "all", entityStatus: 
+              "idle"
+             })
           }
         },
       }
@@ -62,9 +65,13 @@ const todolistsSlice = createAppSlice({
     deleteTodolistTC: create.asyncThunk(
       async ({ id }: { id: string }, thunkAPI) => {
         try {
+          thunkAPI.dispatch(setAppStatus({ status: "loading" }))
+          thunkAPI.dispatch(changeTodolistEntityStatusAC({ entityStatus: "loading", id }))          
           await todolistsApi.deleteTodolist(id)
+          thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { id }
         } catch (error) {
+          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -82,9 +89,12 @@ const todolistsSlice = createAppSlice({
     changeTodolistTitleTC: create.asyncThunk(
       async ({ id, title }: { id: string; title: string }, thunkAPI) => {
         try {
+          thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           await todolistsApi.changeTodolistTitle(id, title)
+          thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { id, title }
         } catch (error) {
+          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
           return thunkAPI.rejectWithValue(error)
         }
       },
@@ -107,6 +117,14 @@ const todolistsSlice = createAppSlice({
         }
       }
     ),
+    changeTodolistEntityStatusAC: create.reducer(
+      (state, action: { payload: { id: string; entityStatus: RequestStatus } }) => {
+        const todolist = state.find((t) => t.id === action.payload.id)
+        if (todolist) {
+          todolist.entityStatus = action.payload.entityStatus
+        }
+      }
+    ),
   }),
 
   selectors: {
@@ -120,6 +138,7 @@ export const {
   deleteTodolistTC,
   changeTodolistTitleTC,
   changeTodolistFilterAC,
+  changeTodolistEntityStatusAC,
 } = todolistsSlice.actions
 
 export const { selectTodolists } = todolistsSlice.selectors
