@@ -27,3 +27,5 @@ export type UpdateTaskModel = {
   startDate: string | null
   deadline: string | null
 }
+
+export type RequestStatus = "idle" | "loading" | "succeeded" | "failed"

@@ -4,6 +4,8 @@ import { tasksApi } from "../api/tasksApi"
 import { DomainTask, UpdateTaskModel } from "../api/tasksApi.types"
 import { setAppStatus } from "@/app/app-slice"
 import { RootState } from "@/app/store"
+import { ResultCode } from "@/common/enums/enums"
+import { handleAppError, handleServerAppError } from "@/common/utils"
 
 export type TasksState = Record<string, DomainTask[]>
 
@@ -36,9 +38,16 @@ const tasksSlice = createAppSlice({
       async (args: { todolistId: string; title: string }, thunkAPI) => {
         try {
           const res = await tasksApi.createTasks(args.todolistId, args.title)
-          const task = res.data.data.item
-          return { task }
+          if (res.data.resultCode === ResultCode.Success) {
+            thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
+            const task = res.data.data.item
+            return { task }
+          } else {
+            handleAppError(thunkAPI.dispatch, res.data)
+            return thunkAPI.rejectWithValue(null)
+          }
         } catch (error) {
+          handleServerAppError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -117,7 +126,7 @@ const tasksSlice = createAppSlice({
           priority: task.priority,
           startDate: task.startDate,
           deadline: task.deadline,
-          status: task.status
+          status: task.status,
         }
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
