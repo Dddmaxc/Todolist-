@@ -13,9 +13,10 @@ import { TaskStatus } from "@/common/enums/enums"
 type Props = {
   todolistId: string
   task: DomainTask
+  disable?: boolean
 }
 
-export const TaskItem = ({ todolistId, task }: Props) => {
+export const TaskItem = ({ todolistId, task, disable }: Props) => {
   const dispatch = useAppDispatch()
 
   const deleteTaskHandler = () => {
@@ -41,10 +42,10 @@ export const TaskItem = ({ todolistId, task }: Props) => {
     <>
       <ListItem sx={getListItemSx(isDone)}>
         <div>
-          <Checkbox checked={isDone} onChange={changeTaskStatusHandler} />
+          <Checkbox checked={isDone} onChange={changeTaskStatusHandler} disabled={disable} />
           <EditableSpan value={task.title} onChange={changeTaskTitle} />
         </div>
-        <IconButton onClick={deleteTaskHandler}>
+        <IconButton onClick={deleteTaskHandler} disabled={disable}>
           <DeleteIcon />
         </IconButton>
       </ListItem>

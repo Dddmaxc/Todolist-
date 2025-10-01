@@ -1,20 +1,29 @@
 import { setAppError, setAppStatus } from "@/app/app-slice"
 import { Dispatch } from "@reduxjs/toolkit"
 import axios from "axios"
+import { z } from "zod"
 
-export const handleServerAppError = (error: unknown, dispatch: Dispatch) => {
-  let errorMessage 
-
-  // axios ошибки
-  if (axios.isAxiosError(error)) {
-    errorMessage = error.response?.data?.messages || error.message 
-  } else if (error instanceof Error) {
-    // нативные ошибки
-    errorMessage = error.message
-  } else {
-    errorMessage = JSON.stringify(error)
+export const handleServerNetworkError = (error: unknown,dispatch: Dispatch) => {
+  let errorMessage
+ 
+  switch (true) {
+    case axios.isAxiosError(error):
+      errorMessage = error.response?.data?.message || error.message
+      break
+ 
+    case error instanceof z.ZodError:
+      console.table(error.issues)
+      errorMessage = 'Zod error. Смотри консоль'
+      break
+ 
+    case error instanceof Error:
+      errorMessage = `Native error: ${error.message}`
+      break
+ 
+    default:
+      errorMessage = JSON.stringify(error)
   }
-
-  dispatch(setAppStatus({ status: "idle" }))
+ 
   dispatch(setAppError({ error: errorMessage }))
+  dispatch(setAppStatus({ status: 'failed' }))
 }

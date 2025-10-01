@@ -1,11 +1,11 @@
 import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
 import { createAppSlice } from "@/common/utils/createAppSlice"
 import { tasksApi } from "../api/tasksApi"
-import { DomainTask, UpdateTaskModel } from "../api/tasksApi.types"
+import { DomainTask, domainTaskSchema, UpdateTaskModel } from "../api/tasksApi.types"
 import { setAppStatus } from "@/app/app-slice"
 import { RootState } from "@/app/store"
 import { ResultCode } from "@/common/enums/enums"
-import { handleAppError, handleServerAppError } from "@/common/utils"
+import { handleAppError, handleServerNetworkError } from "@/common/utils"
 
 export type TasksState = Record<string, DomainTask[]>
 
@@ -20,11 +20,12 @@ const tasksSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await tasksApi.getTasks(todolistId)
+          domainTaskSchema.array().parse(res.data.items)
           const tasks = res.data.items
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { tasks, todolistId }
         } catch (error) {
-          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -47,7 +48,7 @@ const tasksSlice = createAppSlice({
             return thunkAPI.rejectWithValue(null)
           }
         } catch (error) {
-          handleServerAppError(error, thunkAPI.dispatch)
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },

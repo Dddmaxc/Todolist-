@@ -2,15 +2,16 @@ import { type ChangeEvent, type KeyboardEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IconButton from '@mui/material/IconButton';
+import { Nullable } from '@/features/todolist/api/tasksApi.types';
 
 type Props = {
   onCreateItem: (title: string) => void;
-  disabled: boolean
+  disabled?: boolean
 };
 
 export const CreateItemForm = ({ onCreateItem, disabled }: Props) => {
   const [title, setTitle] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Nullable>(null);
 
   const createItemHandler = () => {
     const trimmedTitle = title.trim();

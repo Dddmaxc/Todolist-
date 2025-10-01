@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const Tasks = ({ todolist }: Props) => {
-  const { id, filter } = todolist
+  const { id, filter, entityStatus } = todolist
 
   const tasks = useAppSelector(selectTasks)
   const dispatch = useAppDispatch()
@@ -20,9 +20,9 @@ export const Tasks = ({ todolist }: Props) => {
   useEffect(() => {
     dispatch(fetchTasks(id))
   }, [])
-  
+
   const todolistTasks = tasks[id] || []
-  let filteredTasks = todolistTasks 
+  let filteredTasks = todolistTasks
   if (filter === "active") {
     filteredTasks = todolistTasks.filter((task) => task.status === TaskStatus.New)
   }
@@ -37,7 +37,7 @@ export const Tasks = ({ todolist }: Props) => {
       ) : (
         <List>
           {filteredTasks?.map((task) => (
-            <TaskItem key={task.id} task={task} todolistId={id} />
+            <TaskItem key={task.id} task={task} todolistId={id} disable={entityStatus === "loading"} />
           ))}
         </List>
       )}

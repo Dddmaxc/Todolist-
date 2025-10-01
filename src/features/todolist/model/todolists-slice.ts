@@ -4,7 +4,7 @@ import { createAppSlice } from "@/common/utils/createAppSlice"
 import { setAppStatus } from "@/app/app-slice"
 import { RequestStatus } from "../api/tasksApi.types"
 import { ResultCode } from "@/common/enums/enums"
-import { handleAppError, handleServerAppError } from "@/common/utils"
+import { handleAppError, handleServerNetworkError } from "@/common/utils"
 
 export type FilterValues = "all" | "active" | "completed"
 
@@ -54,7 +54,7 @@ const todolistsSlice = createAppSlice({
             return thunkAPI.rejectWithValue(null)
           }
         } catch (error) {
-          handleServerAppError(error, thunkAPI.dispatch)
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },

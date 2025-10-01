@@ -1,4 +1,4 @@
-import { RequestStatus } from "@/features/todolist/api/tasksApi.types"
+import { Nullable, RequestStatus } from "@/features/todolist/api/tasksApi.types"
 import { createSlice } from "@reduxjs/toolkit"
 
 
@@ -6,9 +6,9 @@ import { createSlice } from "@reduxjs/toolkit"
 export const appSlice = createSlice({
   name: "app",
   initialState: {
-    themeMode: "light" as ThemeMode,
+    themeMode: "dark" as ThemeMode,
     status: "idle" as RequestStatus,
-    error: null as string | null,
+    error: null as Nullable,
   },
   reducers: (create) => ({
     changeThemeMode: create.reducer<{ themeMode: ThemeMode }>((state, action) => {
@@ -17,7 +17,7 @@ export const appSlice = createSlice({
     setAppStatus: create.reducer<{ status: RequestStatus }>((state, action) => {
       state.status = action.payload.status
     }),
-    setAppError: create.reducer<{ error: string | null }>((state, action) => {
+    setAppError: create.reducer<{ error: Nullable}>((state, action) => {
       state.error = action.payload.error
     }),
   }),
