@@ -11,7 +11,7 @@ type Props = {
 
 export const CreateItemForm = ({ onCreateItem, disabled }: Props) => {
   const [title, setTitle] = useState('');
-  const [error, setError] = useState<Nullable>(null);
+  const [error, setError] = useState<Nullable<string>>(null);
 
   const createItemHandler = () => {
     const trimmedTitle = title.trim();

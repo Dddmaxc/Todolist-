@@ -17,20 +17,20 @@ export const domainTaskSchema = z.object({
 export type DomainTask = z.infer<typeof domainTaskSchema>
 
 export type TasksResponse = {
-  error: Nullable
+  error: Nullable<string>
   totalCount: number
   items: DomainTask[]
 }
 
 export type UpdateTaskModel = {
-  description: Nullable
+  description: Nullable<string>
   title: string
   status: TaskStatus
   priority: TaskPriority
-  startDate: Nullable
-  deadline: Nullable
+  startDate: Nullable<string>
+  deadline: Nullable<string>
 }
 
-export type Nullable<T = string> = T | null 
+export type Nullable<T> = T | null
 
 export type RequestStatus = "idle" | "loading" | "succeeded" | "failed"

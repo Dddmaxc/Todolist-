@@ -1,10 +1,11 @@
-import { Todolist } from "../api/todolistsApi.types"
+import { createResponseSchema, Todolist, TodolistSchema } from "../api/todolistsApi.types"
 import { todolistsApi } from "../api/todolistsApi"
 import { createAppSlice } from "@/common/utils/createAppSlice"
 import { setAppStatus } from "@/app/app-slice"
 import { RequestStatus } from "../api/tasksApi.types"
 import { ResultCode } from "@/common/enums/enums"
 import { handleAppError, handleServerNetworkError } from "@/common/utils"
+import { z } from "zod"
 
 export type FilterValues = "all" | "active" | "completed"
 
@@ -23,10 +24,11 @@ const todolistsSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await todolistsApi.getTodolists()
+          TodolistSchema.array().parse(res.data)
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { todolists: res.data }
         } catch (error) {
-          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -46,6 +48,7 @@ const todolistsSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await todolistsApi.createTodolist(title)
+          TodolistSchema.parse(res.data.data.item)
 
           if (res.data.resultCode === ResultCode.Success) {
             return { todolist: res.data.data.item }
@@ -73,11 +76,20 @@ const todolistsSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           thunkAPI.dispatch(changeTodolistEntityStatusAC({ entityStatus: "loading", id }))
-          await todolistsApi.deleteTodolist(id)
-          thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
-          return { id }
+          //сохраняем результат вызова API
+          const res = await todolistsApi.deleteTodolist(id)
+          //Валидация ответа
+          createResponseSchema(z.object({})).parse(res.data)
+
+          if (res.data.resultCode === ResultCode.Success) {
+            thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
+            return { id }
+          } else {
+            handleAppError(thunkAPI.dispatch, res.data)
+            return thunkAPI.rejectWithValue(null)
+          }
         } catch (error) {
-          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -100,7 +112,7 @@ const todolistsSlice = createAppSlice({
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { id, title }
         } catch (error) {
-          thunkAPI.dispatch(setAppStatus({ status: "failed" }))
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(error)
         }
       },
