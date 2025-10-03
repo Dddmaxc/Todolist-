@@ -1,7 +1,7 @@
 import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
 import { createAppSlice } from "@/common/utils/createAppSlice"
 import { tasksApi } from "../api/tasksApi"
-import { DomainTask, domainTaskSchema, UpdateTaskModel } from "../api/tasksApi.types"
+import { DomainTask, getTasksSchema, taskOperationResponseSchema, UpdateTaskModel } from "../api/tasksApi.types"
 import { setAppStatus } from "@/app/app-slice"
 import { RootState } from "@/app/store"
 import { ResultCode } from "@/common/enums/enums"
@@ -20,7 +20,7 @@ const tasksSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await tasksApi.getTasks(todolistId)
-          domainTaskSchema.array().parse(res.data.items)
+          getTasksSchema.parse(res.data) // ZOD 💎
           const tasks = res.data.items
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { tasks, todolistId }
@@ -39,7 +39,7 @@ const tasksSlice = createAppSlice({
       async (args: { todolistId: string; title: string }, thunkAPI) => {
         try {
           const res = await tasksApi.createTasks(args.todolistId, args.title)
-          domainTaskSchema.parse(res.data.data.item)
+          taskOperationResponseSchema.parse(res.data) // ZOD 💎
           if (res.data.resultCode === ResultCode.Success) {
             thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
             const task = res.data.data.item
@@ -94,7 +94,7 @@ const tasksSlice = createAppSlice({
           }
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await tasksApi.updateTask({ todolistId: task.todoListId, taskId: task.id, model })
-          domainTaskSchema.parse(res.data.data.item)
+          taskOperationResponseSchema.parse(res.data) // ZOD 💎
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { task: res.data.data.item }
         } catch (error) {
@@ -134,7 +134,7 @@ const tasksSlice = createAppSlice({
         try {
           thunkAPI.dispatch(setAppStatus({ status: "loading" }))
           const res = await tasksApi.updateTask({ todolistId, taskId, model })
-          domainTaskSchema.parse(res.data.data.item)
+          taskOperationResponseSchema.parse(res.data) // ZOD 💎
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { task: res.data.data.item }
         } catch (error) {
