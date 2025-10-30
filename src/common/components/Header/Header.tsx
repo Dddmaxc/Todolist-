@@ -6,10 +6,12 @@ import { getTheme } from "@/common/theme/theme"
 import { changeThemeMode, selectStatus, selectThemeMode } from "@/app/app-slice"
 import { containerSx } from "@/common/styles/container.styles"
 import { NavButton } from "../NavButton/NavButton"
+import { logoutTC, selectIsLoggedIn } from "@/features/auth/model/auth-slice"
 
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const setStatus = useAppSelector(selectStatus)
+  const isLogged = useAppSelector(selectIsLoggedIn)
 
   const dispatch = useAppDispatch()
 
@@ -23,6 +25,10 @@ export const Header = () => {
     )
   }
 
+  const logautHandler = () => {
+    dispatch(logoutTC())
+  }
+
 
   return (
     <>
@@ -33,8 +39,7 @@ export const Header = () => {
               <MenuIcon />
             </IconButton>
             <div>
-              <NavButton>Sign in</NavButton>
-              <NavButton>Sign up</NavButton>
+              {isLogged && <NavButton onClick={logautHandler}>Logaut</NavButton>}
               <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
               <Switch color={"default"} onChange={changeMode} />
             </div>
