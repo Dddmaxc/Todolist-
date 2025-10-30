@@ -7,3 +7,9 @@ export const instance = axios.create({
     Authorization: `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
   },
 })
+
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("AUTH_TOKEN")
+  config.headers.Authorization = `Bearer ${token}`
+  return config
+})
