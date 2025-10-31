@@ -141,6 +141,9 @@ const todolistsSlice = createAppSlice({
         }
       },
     ),
+    clearAuthState: create.reducer(() => {
+      return []
+    }),
   }),
 
   selectors: {
@@ -155,6 +158,7 @@ export const {
   changeTodolistTitleTC,
   changeTodolistFilterAC,
   changeTodolistEntityStatusAC,
+  clearAuthState,
 } = todolistsSlice.actions
 
 export const { selectTodolists } = todolistsSlice.selectors

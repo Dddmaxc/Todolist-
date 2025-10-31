@@ -1,4 +1,4 @@
-import { createTodolistTC, deleteTodolistTC } from "./todolists-slice"
+import { clearAuthState, createTodolistTC, deleteTodolistTC } from "./todolists-slice"
 import { createAppSlice } from "@/common/utils/createAppSlice"
 import { tasksApi } from "../api/tasksApi"
 import { DomainTask, getTasksSchema, taskOperationResponseSchema, UpdateTaskModel } from "../api/tasksApi.types"
@@ -72,7 +72,7 @@ const tasksSlice = createAppSlice({
             return thunkAPI.rejectWithValue(null)
           }
         } catch (error) {
-          handleServerNetworkError( error, thunkAPI.dispatch)
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -98,7 +98,7 @@ const tasksSlice = createAppSlice({
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { task: res.data.data.item }
         } catch (error) {
-          handleServerNetworkError( error, thunkAPI.dispatch)
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -138,7 +138,7 @@ const tasksSlice = createAppSlice({
           thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
           return { task: res.data.data.item }
         } catch (error) {
-          handleServerNetworkError( error, thunkAPI.dispatch)
+          handleServerNetworkError(error, thunkAPI.dispatch)
           return thunkAPI.rejectWithValue(null)
         }
       },
@@ -153,7 +153,6 @@ const tasksSlice = createAppSlice({
       },
     ),
   }),
-
   extraReducers: (builder) => {
     builder
       .addCase(createTodolistTC.fulfilled, (state, action) => {
@@ -167,6 +166,9 @@ const tasksSlice = createAppSlice({
         if (id) {
           delete state[id]
         }
+      })
+      .addCase(clearAuthState, () => {
+        return {}
       })
   },
   selectors: {

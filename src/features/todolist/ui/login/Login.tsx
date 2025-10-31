@@ -14,13 +14,11 @@ import styles from "./Login.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginForm, loginSchema } from "@/features/auth/lib"
 import { useAppDispatch } from "@/common/hooks/useAppDispatch"
-import { loginTC, selectIsLoggedIn } from "@/features/auth/model/auth-slice"
-import { Navigate } from "react-router"
-import { Path } from "@/common/routing/Routing"
+import { loginTC } from "@/features/auth/model/auth-slice"
 
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
-  const isLoginIn = useAppSelector(selectIsLoggedIn)
+
 
   const dispatch = useAppDispatch()
 
@@ -41,9 +39,7 @@ export const Login = () => {
     // reset()
   }
   
-  if(isLoginIn) {
-    return <Navigate to={Path.Main}/>
-  }
+
 
   return (
     <Grid container justifyContent={"center"}>

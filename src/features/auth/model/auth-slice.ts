@@ -4,6 +4,7 @@ import { setAppStatus } from "@/app/app-slice"
 import { authApi } from "../api/authApi"
 import { ResultCode } from "@/common/enums/enums"
 import { AUTH_TOKEN } from "@/common/constants"
+import { clearAuthState } from "@/features/todolist/model/todolists-slice"
 
 interface AuthState {
   isLoggedIn: boolean
@@ -54,6 +55,7 @@ export const authSlice = createAppSlice({
 
           if (res.data.resultCode === ResultCode.Success) {
             thunkAPI.dispatch(setAppStatus({ status: "succeeded" }))
+            thunkAPI.dispatch(clearAuthState())
             localStorage.removeItem(AUTH_TOKEN)
             return { isLoggedIn: false }
           } else {
@@ -69,6 +71,7 @@ export const authSlice = createAppSlice({
           if (action.payload) {
             state.isLoggedIn = action.payload.isLoggedIn
           }
+          
         },
       },
     ),
@@ -99,7 +102,6 @@ export const authSlice = createAppSlice({
     ),
   }),
 })
-
 
 export const { selectIsLoggedIn } = authSlice.selectors
 export const { loginTC, logoutTC, initializeAppTC } = authSlice.actions
